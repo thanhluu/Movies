@@ -16,21 +16,28 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var posterView: UIImageView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var infoView: UIView!
+    @IBOutlet weak var releaseDate: UILabel!
+    @IBOutlet weak var voteAverage: UILabel!
     
     var overview: String!
     var movieTitle: String!
     var poster: String!
+    var releaseDateText: String!
+    var voteText: Double!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         titleLabel.text = movieTitle
+        titleLabel.sizeToFit()
         overviewLabel.text = overview
         overviewLabel.sizeToFit()
         infoView.frame.size.height = overviewLabel.frame.size.height + overviewLabel.frame.origin.y + 10
         scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: 60 + infoView.frame.origin.y + infoView.frame.size.height)
-        
+  
+        releaseDate.text = releaseDateText
+        voteAverage.text = String(voteText)
         
         if let posterPath = poster {
             let posterBaseUrl = "http://image.tmdb.org/t/p/w500"

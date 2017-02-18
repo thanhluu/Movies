@@ -24,11 +24,29 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     var endpoint: String!
     let refreshControl = UIRefreshControl()
     
+    // Custom Colors
+    let primaryColor = UIColor(red: 136/255, green: 160/255, blue: 31/255, alpha: 1)
+    let darkColor = UIColor(red: 30/255, green: 34/255, blue: 36/255, alpha: 1)
+    let lightColor = UIColor(red: 72/255, green: 76/255, blue: 82/255, alpha: 1)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Custom Navigation Bar
+        navigationController?.navigationBar.barStyle = UIBarStyle.black
+        navigationController?.navigationBar.tintColor = primaryColor
+        let imageView = UIImageView(image: UIImage(named: "logo"))
+        navigationItem.titleView = imageView
+        navigationController?.navigationBar.barTintColor = darkColor
+        
+        // Custom Search Bar
+        searchBar.layer.borderWidth = 1
+        searchBar.layer.borderColor = lightColor.cgColor
+        
+        // Custom Table View
+        tableView.backgroundColor = darkColor
 
-        // Do any additional setup after loading the view.
-
+        // Data Source & Delegate
         tableView.dataSource = self
         tableView.delegate = self
         collectionView.dataSource = self
@@ -151,6 +169,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         else {
             cell.posterView.image = nil
         }
+
         return cell
     }
     
@@ -183,7 +202,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             detailViewController.movieTitle = movie["title"] as? String
             detailViewController.overview = movie["overview"] as? String
             detailViewController.poster = movie["poster_path"] as? String
-            
+            detailViewController.voteText = movie["vote_average"] as? Double
+            detailViewController.releaseDateText = movie["release_date"] as? String
+
             tableView.deselectRow(at: indexPath!, animated: true)
         } else {
             
@@ -196,6 +217,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             detailViewController.movieTitle = movie["title"] as? String
             detailViewController.overview = movie["overview"] as? String
             detailViewController.poster = movie["poster_path"] as? String
+            detailViewController.voteText = movie["vote_average"] as? Double
+            detailViewController.releaseDateText = movie["release_date"] as? String
+            
         }
         
     }
