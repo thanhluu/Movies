@@ -10,13 +10,17 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
-class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var errorView: UIView!
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var layoutSwitch: UISegmentedControl!
+    @IBOutlet weak var searchBar: UISearchBar!
     
     let posterBaseUrl = "http://image.tmdb.org/t/p/w500"
     var movies = [NSDictionary]()
+    var filteredMovies = [NSDictionary]()
     var endpoint: String!
     let refreshControl = UIRefreshControl()
     
@@ -27,10 +31,17 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
 
         tableView.dataSource = self
         tableView.delegate = self
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        searchBar.delegate = self
 
         refreshControl.addTarget(self, action: #selector(MoviesViewController.loadMovie), for: UIControlEvents.valueChanged)
         
         tableView.addSubview(refreshControl)
+        
+        tableView.isHidden = false
+        collectionView.isHidden = true
+        
         loadMovie()
     }
 
@@ -38,10 +49,46 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    @IBAction func switchLayout(_ sender: AnyObject) {
+        tableView.isHidden = sender.selectedSegmentIndex == 1
+        collectionView.isHidden = sender.selectedSegmentIndex == 0
+        
+        if (sender.selectedSegmentIndex == 0) {
+            tableView.insertSubview(refreshControl, at: 0)
+            tableView.reloadData()
+        } else {
+            collectionView.insertSubview(refreshControl, at: 0)
+            collectionView.reloadData()
+        }
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if (searchText == "") {
+            filteredMovies = movies
+
+            searchBar.perform(#selector(UIResponder.resignFirstResponder), with: nil, afterDelay: 0.1)
+        } else {
+            filteredMovies = movies.filter({ (movie: NSDictionary) in
+                let title = movie["title"] as! String
+                let overview = movie["overview"] as! String
+                return title.localizedCaseInsensitiveContains(searchText) || overview.localizedCaseInsensitiveContains(searchText)
+            })
+        }
+        
+        if (layoutSwitch.selectedSegmentIndex == 0) {
+            tableView.reloadData()
+        } else {
+            collectionView.reloadData()
+        }
+    }
     
     func loadMovie() {
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint)?api_key=\(apiKey)")
+        let url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)")
         let request = URLRequest(
             url: url!,
             cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData,
@@ -68,12 +115,14 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                                     if let responseDictionary = try! JSONSerialization.jsonObject(
                                         with: data, options:[]) as? NSDictionary {
                                         self.movies = responseDictionary["results"] as! [NSDictionary]
+                                        self.filteredMovies = self.movies
                                         
-                                        //print(self.movies)
-                                        self.tableView.reloadData()
-
+                                        if (self.layoutSwitch.selectedSegmentIndex == 0) {
+                                            self.tableView.reloadData()
+                                        } else {
+                                            self.collectionView.reloadData()
+                                        }
                                         self.refreshControl.endRefreshing()
-                                        
                                     }
                                 } else {
                                     self.refreshControl.endRefreshing()
@@ -85,53 +134,69 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         task.resume()
     }
     
+    // List View
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return movies.count
+        return filteredMovies.count
     }
-    
-    
-    // Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
-    // Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = UITableViewCell(
-//        cell.textLabel?.text = movies[indexPath.row]["title"] as? String
-
         let cell = tableView.dequeueReusableCell(withIdentifier: "movieCell") as! MovieCell
-        cell.titleLabel.text = movies[indexPath.row]["title"] as? String
-        cell.overviewLabel.text = movies[indexPath.row]["overview"] as? String
+        let movie = filteredMovies[indexPath.row]
         
-        if let posterPath = movies[indexPath.row]["poster_path"] as? String {
+        cell.titleLabel.text = movie["title"] as? String
+        cell.overviewLabel.text = movie["overview"] as? String
+        
+        if let posterPath = movie["poster_path"] as? String {
             cell.posterView.setImageWith(URL(string: posterBaseUrl + posterPath)!)
         }
         else {
-            // No poster image. Can either set to nil (no image) or a default movie poster image
-            // that you include as an asset
             cell.posterView.image = nil
         }
-        
-        
-        
         return cell
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    */
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-        let nextVC = segue.destination as! DetailViewController
-        let ip = tableView.indexPathForSelectedRow
-        nextVC.movieTitle = movies[(ip?.row)!]["title"] as? String
-        nextVC.overview = movies[(ip?.row)!]["overview"] as? String
-        nextVC.poster = movies[(ip?.row)!]["poster_path"] as? String
-        
-        tableView.deselectRow(at: ip!, animated: true)
+    // Grid View
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return filteredMovies.count
     }
- 
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "gridMovieCell", for: indexPath) as! GridMovieCell
+        let movie = filteredMovies[indexPath.row]
+        
+        if let posterPath = movie["poster_path"] as? String {
+            cell.posterView.setImageWith(URL(string: posterBaseUrl + posterPath)!)
+        }
+        else {
+            cell.posterView.image = nil
+        }
+        return cell
+    }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (sender is UITableViewCell) {
+            let cell = sender as! UITableViewCell
+            let indexPath = tableView.indexPath(for: cell)
+            let movie = filteredMovies[indexPath!.row]
+            
+            let detailViewController = segue.destination as! DetailViewController
+            
+            detailViewController.movieTitle = movie["title"] as? String
+            detailViewController.overview = movie["overview"] as? String
+            detailViewController.poster = movie["poster_path"] as? String
+            
+            tableView.deselectRow(at: indexPath!, animated: true)
+        } else {
+            
+            let cell = sender as! UICollectionViewCell
+            let indexPath = collectionView.indexPath(for: cell)
+            let movie = filteredMovies[indexPath!.row]
+            
+            let detailViewController = segue.destination as! DetailViewController
+            
+            detailViewController.movieTitle = movie["title"] as? String
+            detailViewController.overview = movie["overview"] as? String
+            detailViewController.poster = movie["poster_path"] as? String
+        }
+        
+    }
 }
