@@ -40,16 +40,57 @@ class DetailViewController: UIViewController {
         voteAverage.text = String(voteText)
         
         if let posterPath = poster {
-            let posterBaseUrl = "http://image.tmdb.org/t/p/w500"
-            posterView.setImageWith(URL(string: posterBaseUrl + posterPath)!)
+            //let posterBaseUrl = "http://image.tmdb.org/t/p/w500"
+            //posterView.setImageWith(URL(string: posterBaseUrl + posterPath)!)
+            
+            let smallImageUrl = "http://image.tmdb.org/t/p/w92" + posterPath
+            let largeImageUrl = "http://image.tmdb.org/t/p/w342" + posterPath
+            
+            let smallImageRequest = NSURLRequest(url: NSURL(string: smallImageUrl)! as URL)
+            let largeImageRequest = NSURLRequest(url: NSURL(string: largeImageUrl)! as URL)
+            
+            posterView.setImageWith(
+                smallImageRequest as URLRequest,
+                placeholderImage: nil,
+                success: { (smallImageRequest, smallImageResponse, smallImage) -> Void in
+                    
+                    // smallImageResponse will be nil if the smallImage is already available
+                    // in cache (might want to do something smarter in that case).
+                    self.posterView.alpha = 0.0
+                    self.posterView.image = smallImage
+                    
+                    UIView.animate(withDuration: 0.3, animations: { () -> Void in
+                        
+                        self.posterView.alpha = 1.0
+                        
+                    }, completion: { (sucess) -> Void in
+                        
+                        // The AFNetworking ImageView Category only allows one request to be sent at a time
+                        // per ImageView. This code must be in the completion block.
+                        self.posterView.setImageWith(
+                            largeImageRequest as URLRequest,
+                            placeholderImage: smallImage,
+                            success: { (largeImageRequest, largeImageResponse, largeImage) -> Void in
+                                
+                                self.posterView.image = largeImage
+                                
+                        },
+                            failure: { (request, response, error) -> Void in
+                                // do something for the failure condition of the large image request
+                                // possibly setting the ImageView's image to a default image
+                        })
+                    })
+            },
+                failure: { (request, response, error) -> Void in
+                    // do something for the failure condition
+                    // possibly try to get the large image
+            })
         }
         else {
             // No poster image. Can either set to nil (no image) or a default movie poster image
             // that you include as an asset
             posterView.image = nil
         }
-
-        
     }
 
     override func didReceiveMemoryWarning() {

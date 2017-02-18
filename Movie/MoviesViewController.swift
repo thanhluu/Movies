@@ -18,7 +18,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var layoutSwitch: UISegmentedControl!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    let posterBaseUrl = "http://image.tmdb.org/t/p/w500"
+    let posterBaseUrl = "http://image.tmdb.org/t/p/w185"
     var movies = [NSDictionary]()
     var filteredMovies = [NSDictionary]()
     var endpoint: String!
@@ -163,8 +163,38 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         cell.titleLabel.text = movie["title"] as? String
         cell.overviewLabel.text = movie["overview"] as? String
         
+        // Use a red color when the user selects the cell
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = lightColor
+        cell.selectedBackgroundView = backgroundView
+        
+        // cell.posterView.setImageWith(URL(string: posterBaseUrl + posterPath)!)
+        // Below code are impliment images are fade in as they are loading from network
         if let posterPath = movie["poster_path"] as? String {
-            cell.posterView.setImageWith(URL(string: posterBaseUrl + posterPath)!)
+            let imageUrl = posterBaseUrl + posterPath
+            let imageRequest = NSURLRequest(url: NSURL(string: imageUrl)! as URL)
+            
+            cell.posterView.setImageWith(
+                imageRequest as URLRequest,
+                placeholderImage: nil,
+                success: { (imageRequest, imageResponse, image) -> Void in
+                    
+                    // imageResponse will be nil if the image is cached
+                    if imageResponse != nil {
+                        //print("Image was NOT cached, fade in image")
+                        cell.posterView.alpha = 0.0
+                        cell.posterView.image = image
+                        UIView.animate(withDuration: 0.3, animations: { () -> Void in
+                            cell.posterView.alpha = 1.0
+                        })
+                    } else {
+                        //print("Image was cached so just update the image")
+                        cell.posterView.image = image
+                    }
+            },
+                failure: { (imageRequest, imageResponse, error) -> Void in
+                    // do something for the failure condition
+            })
         }
         else {
             cell.posterView.image = nil
@@ -182,8 +212,33 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "gridMovieCell", for: indexPath) as! GridMovieCell
         let movie = filteredMovies[indexPath.row]
         
+        // cell.posterView.setImageWith(URL(string: posterBaseUrl + posterPath)!)
+        // Below code are impliment images are fade in as they are loading from network
         if let posterPath = movie["poster_path"] as? String {
-            cell.posterView.setImageWith(URL(string: posterBaseUrl + posterPath)!)
+            let imageUrl = posterBaseUrl + posterPath
+            let imageRequest = NSURLRequest(url: NSURL(string: imageUrl)! as URL)
+            
+            cell.posterView.setImageWith(
+                imageRequest as URLRequest,
+                placeholderImage: nil,
+                success: { (imageRequest, imageResponse, image) -> Void in
+                    
+                    // imageResponse will be nil if the image is cached
+                    if imageResponse != nil {
+                        //print("Image was NOT cached, fade in image")
+                        cell.posterView.alpha = 0.0
+                        cell.posterView.image = image
+                        UIView.animate(withDuration: 0.3, animations: { () -> Void in
+                            cell.posterView.alpha = 1.0
+                        })
+                    } else {
+                        //print("Image was cached so just update the image")
+                        cell.posterView.image = image
+                    }
+            },
+                failure: { (imageRequest, imageResponse, error) -> Void in
+                    // do something for the failure condition
+            })
         }
         else {
             cell.posterView.image = nil
