@@ -27,6 +27,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         nowPlayingViewController.tabBarItem.title = "Now Playing"
         nowPlayingViewController.tabBarItem.image = UIImage(named: "now_playing")
         
+        // Set up the Popular View Controller
+        let popularNavigationController = storyboard.instantiateViewController(withIdentifier: "MoviesNavigationCtrl") as! UINavigationController
+        let popularViewController = popularNavigationController.topViewController as! MoviesViewController
+        popularViewController.endpoint = "popular"
+        popularViewController.tabBarItem.title = "Popular"
+        popularViewController.tabBarItem.image = UIImage(named: "popular")
+        
         // Set up the Top Rated View Controller
         let topRatedNavigationController = storyboard.instantiateViewController(withIdentifier: "MoviesNavigationCtrl") as! UINavigationController
         let topRatedViewController = topRatedNavigationController.topViewController as! MoviesViewController
@@ -34,14 +41,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         topRatedViewController.tabBarItem.title = "Top Rated"
         topRatedViewController.tabBarItem.image = UIImage(named: "top_rated")
         
+        // Set up the Upcoming View Controller
+        let upcomingNavigationController = storyboard.instantiateViewController(withIdentifier: "MoviesNavigationCtrl") as! UINavigationController
+        let upcomingViewController = upcomingNavigationController.topViewController as! MoviesViewController
+        upcomingViewController.endpoint = "upcoming"
+        upcomingViewController.tabBarItem.title = "Upcoming"
+        upcomingViewController.tabBarItem.image = UIImage(named: "upcoming")
+        
         // Set up the Tab Bar Controller to have two tabs
         let tabBarController = UITabBarController()
-        tabBarController.viewControllers = [nowPlayingNavigationController, topRatedNavigationController]
+        tabBarController.viewControllers = [nowPlayingNavigationController, popularNavigationController, topRatedNavigationController, upcomingNavigationController]
         
         // Custom Colors
         let primaryColor = UIColor(red: 136/255, green: 160/255, blue: 31/255, alpha: 1)
         let darkColor = UIColor(red: 30/255, green: 34/255, blue: 36/255, alpha: 1)
-        let lightColor = UIColor(red: 72/255, green: 76/255, blue: 82/255, alpha: 1)
         
         // Customize Tab Bar Colors
         tabBarController.tabBar.barStyle = UIBarStyle.black

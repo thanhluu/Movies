@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "1487500676_085_Movie.png",
+      "filename" : "1487500520_173_CurvedArrowLeftUp.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "1487500674_085_Movie.png",
+      "filename" : "upcoming.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "now_playing.png",
+      "filename" : "1487500515_173_CurvedArrowLeftUp.png",
       "scale" : "3x"
     }
   ],

@@ -30,6 +30,7 @@ The following **additional** features are implemented:
 - [X] Customize table view & collection view
 - [X] Customize detail view
 - [X] Add release & vote average information into detail view
+- [X] Add popular & upcoming tabs
 
 ## Video Walkthrough
 
