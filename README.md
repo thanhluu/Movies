@@ -2,7 +2,7 @@
 
 **Yocine** is a movies app using the [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
-Time spent: **19** hours spent in total
+Time spent: **21** hours spent in total
 
 ## User Stories
 
@@ -32,6 +32,7 @@ The following **additional** features are implemented:
 - [X] Add release & vote average information into detail view
 - [X] Add popular & upcoming tabs
 - [X] Add infinite scroll to load more movies
+- [X] Zoomable poster view
 
 ## Video Walkthrough
 

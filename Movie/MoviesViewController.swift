@@ -150,7 +150,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     func loadMovie(_ page: Int = 1) {
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)&page=\(page)")
-        print(url!)
+        //print(url!)
         let request = URLRequest(
             url: url!,
             cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData,

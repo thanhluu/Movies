@@ -164,6 +164,13 @@
                                 <rect key="frame" x="15" y="79" width="100" height="150"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="0Tw-F5-7cG">
+                                <rect key="frame" x="15" y="79" width="100" height="150"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="onPresentModal:" destination="Hwb-fg-M0U" eventType="touchUpInside" id="mjH-6N-YWj"/>
+                                </connections>
+                            </button>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" id="1UZ-fs-Ep2">
                                 <rect key="frame" x="0.0" y="240" width="320" height="323"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -245,11 +252,44 @@
                         <outlet property="scrollView" destination="1UZ-fs-Ep2" id="EfK-Y8-tAE"/>
                         <outlet property="titleLabel" destination="FSh-p8-aVU" id="4Bt-Ij-8oo"/>
                         <outlet property="voteAverage" destination="2MU-FQ-Wbc" id="KYR-kA-dtK"/>
+                        <segue destination="OWB-cP-2ZO" kind="modal" identifier="zoomPoster" id="6CU-Ac-07F"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tvS-UP-72b" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1027" y="136"/>
+            <point key="canvasLocation" x="1025" y="136"/>
+        </scene>
+        <!--Poster View Controller-->
+        <scene sceneID="hpW-FQ-lNa">
+            <objects>
+                <viewController storyboardIdentifier="posterVC" id="OWB-cP-2ZO" customClass="PosterViewController" customModule="Movie" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="EfT-vq-CVk">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" id="8zY-5o-5GL">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="4kX-K0-4hM">
+                                        <rect key="frame" x="10" y="59" width="300" height="450"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                </subviews>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.11764705882352941" green="0.13333333333333333" blue="0.14117647058823529" alpha="1" colorSpace="calibratedRGB"/>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="4kX-K0-4hM" id="tjb-pF-fIm"/>
+                        <outlet property="scrollView" destination="8zY-5o-5GL" id="jdi-K8-lI9"/>
+                        <segue destination="XuP-GI-v4p" kind="unwind" identifier="unwindToDetailViewController" unwindAction="unwindToDetailViewControllerWithSegue:" id="urD-SI-pl2"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ide-nE-aem" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="XuP-GI-v4p" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1502" y="145"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="ff4-rV-lAZ">
@@ -285,6 +325,6 @@
         <simulatedScreenMetrics key="destination" type="retina4_0.fullscreen"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="oA9-5l-2YD"/>
+        <segue reference="Dtj-OF-5U0"/>
     </inferredMetricsTieBreakers>
 </document>

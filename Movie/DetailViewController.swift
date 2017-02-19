@@ -44,7 +44,7 @@ class DetailViewController: UIViewController {
             //posterView.setImageWith(URL(string: posterBaseUrl + posterPath)!)
             
             let smallImageUrl = "http://image.tmdb.org/t/p/w92" + posterPath
-            let largeImageUrl = "http://image.tmdb.org/t/p/w342" + posterPath
+            let largeImageUrl = "http://image.tmdb.org/t/p/w1000" + posterPath
             
             let smallImageRequest = NSURLRequest(url: NSURL(string: smallImageUrl)! as URL)
             let largeImageRequest = NSURLRequest(url: NSURL(string: largeImageUrl)! as URL)
@@ -92,21 +92,33 @@ class DetailViewController: UIViewController {
             posterView.image = nil
         }
     }
+    
+    @IBAction func unwindToDetailViewController(segue: UIStoryboardSegue) {}
+    
+    @IBAction func onPresentModal(_ sender: Any) {
+        performSegue(withIdentifier: "zoomPoster", sender: self)
+        
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let posterVC = mainStoryboard.instantiateViewController(withIdentifier: "posterVC") as! PosterViewController
+        
+        self.present(posterVC, animated: true, completion: nil)
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
     /*
     // MARK: - Navigation
-
     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     */
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+        let posterViewController = segue.destination as! PosterViewController
+        posterViewController.posterView = posterView.image
     }
-    */
+ 
 
 }

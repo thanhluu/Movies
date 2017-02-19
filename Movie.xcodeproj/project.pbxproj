@@ -15,6 +15,7 @@
 		B62D50B71E54AD2A00D6A887 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B62D50B51E54AD2A00D6A887 /* LaunchScreen.storyboard */; };
 		B62D50BF1E54ADB400D6A887 /* MoviesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D50BE1E54ADB400D6A887 /* MoviesViewController.swift */; };
 		B62D50C11E54B75500D6A887 /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62D50C01E54B75500D6A887 /* MovieCell.swift */; };
+		B67160411E59CA7400560203 /* PosterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67160401E59CA7400560203 /* PosterViewController.swift */; };
 		B67E95591E5815730092BB3A /* GridMovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67E95581E5815730092BB3A /* GridMovieCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,7 @@
 		B62D50B81E54AD2A00D6A887 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B62D50BE1E54ADB400D6A887 /* MoviesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoviesViewController.swift; sourceTree = "<group>"; };
 		B62D50C01E54B75500D6A887 /* MovieCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
+		B67160401E59CA7400560203 /* PosterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PosterViewController.swift; sourceTree = "<group>"; };
 		B67E95581E5815730092BB3A /* GridMovieCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GridMovieCell.swift; sourceTree = "<group>"; };
 		F1D00129ACC6652A01CE064A /* Pods-Movie.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Movie.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Movie/Pods-Movie.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -85,6 +87,7 @@
 				B62D50C01E54B75500D6A887 /* MovieCell.swift */,
 				B60CD2A21E57389400D39ED0 /* DetailViewController.swift */,
 				B67E95581E5815730092BB3A /* GridMovieCell.swift */,
+				B67160401E59CA7400560203 /* PosterViewController.swift */,
 			);
 			path = Movie;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 				B62D50C11E54B75500D6A887 /* MovieCell.swift in Sources */,
 				B60CD2A31E57389400D39ED0 /* DetailViewController.swift in Sources */,
 				B67E95591E5815730092BB3A /* GridMovieCell.swift in Sources */,
+				B67160411E59CA7400560203 /* PosterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,6 +353,7 @@
 			baseConfigurationReference = F1D00129ACC6652A01CE064A /* Pods-Movie.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 566T8PK976;
 				INFOPLIST_FILE = Movie/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -364,6 +369,7 @@
 			baseConfigurationReference = 4F514CC29A7A71D8B97FD95B /* Pods-Movie.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 566T8PK976;
 				INFOPLIST_FILE = Movie/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
