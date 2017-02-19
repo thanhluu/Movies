@@ -145,6 +145,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
     func refreshMovie() {
         currentPage = 1
         loadMovie(currentPage)
+        MBProgressHUD.hide(for: self.view, animated: true)
     }
     
     func loadMovie(_ page: Int = 1) {
@@ -170,8 +171,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                              completionHandler: { (dataOrNil, response, error) in
                                 if (error != nil) {
                                     print("error \(error)")
-                                    self.errorView.isHidden = false
                                     self.refreshControl.endRefreshing()
+                                    MBProgressHUD.hide(for: self.view, animated: true)
+                                    self.errorView.isHidden = false
                                 }
                                 
                                 if let data = dataOrNil {
