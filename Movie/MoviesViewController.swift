@@ -10,7 +10,7 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
-class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate {
+class MoviesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate, UIScrollViewDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var errorView: UIView!
@@ -53,7 +53,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         collectionView.delegate = self
         searchBar.delegate = self
 
-        refreshControl.addTarget(self, action: #selector(MoviesViewController.loadMovie), for: UIControlEvents.valueChanged)
+        refreshControl.addTarget(self, action: #selector(MoviesViewController.refreshMovie), for: UIControlEvents.valueChanged)
         
         tableView.addSubview(refreshControl)
         
@@ -104,9 +104,53 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    func loadMovie() {
+    var isMoreDataLoading = false
+    var currentPage = 1
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if (!isMoreDataLoading) {
+            // Table View
+            // Calculate the position of one screen length before the bottom of the results
+            let scrollTableViewContentHeight = tableView.contentSize.height
+            let scrollTableOffsetThreshold = scrollTableViewContentHeight - tableView.bounds.size.height
+            
+            // When the user has scrolled past the threshold, start requesting
+            if(scrollView.contentOffset.y > scrollTableOffsetThreshold && tableView.isDragging) {
+                isMoreDataLoading = true
+                
+                // Code to load more results
+                if ( currentPage < 1000 ) {
+                    currentPage += 1
+                    loadMovie( currentPage )
+                }
+            }
+            
+            // Collection View
+            // Calculate the position of one screen length before the bottom of the results
+            let scrollCollectionViewContentHeight = collectionView.contentSize.height
+            let scrollCollectionOffsetThreshold = scrollCollectionViewContentHeight - collectionView.bounds.size.height
+            
+            // When the user has scrolled past the threshold, start requesting
+            if(scrollView.contentOffset.y > scrollCollectionOffsetThreshold && collectionView.isDragging) {
+                isMoreDataLoading = true
+                
+                // Code to load more results
+                if ( currentPage < 1000 ) {
+                    currentPage += 1
+                    loadMovie( currentPage )
+                }
+            }
+        }
+    }
+    
+    func refreshMovie() {
+        currentPage = 1
+        loadMovie(currentPage)
+    }
+    
+    func loadMovie(_ page: Int = 1) {
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)")
+        let url = URL(string: "https://api.themoviedb.org/3/movie/\(endpoint!)?api_key=\(apiKey)&page=\(page)")
+        print(url!)
         let request = URLRequest(
             url: url!,
             cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData,
@@ -129,11 +173,19 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                                     self.errorView.isHidden = false
                                     self.refreshControl.endRefreshing()
                                 }
+                                
                                 if let data = dataOrNil {
                                     if let responseDictionary = try! JSONSerialization.jsonObject(
                                         with: data, options:[]) as? NSDictionary {
                                         self.movies = responseDictionary["results"] as! [NSDictionary]
-                                        self.filteredMovies = self.movies
+                                        if ( page > 1 ) {
+                                            self.filteredMovies = self.filteredMovies + self.movies
+                                        } else {
+                                            self.filteredMovies = self.movies
+                                        }
+                                        
+                                        // Update flag
+                                        self.isMoreDataLoading = false
                                         
                                         if (self.layoutSwitch.selectedSegmentIndex == 0) {
                                             self.tableView.reloadData()
@@ -142,12 +194,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                                         }
                                         self.refreshControl.endRefreshing()
                                     }
+                                    // Hide HUD once the network request comes back (must be done on main UI thread)
+                                    MBProgressHUD.hide(for: self.view, animated: true)
                                 } else {
                                     self.refreshControl.endRefreshing()
                                     self.errorView.isHidden = false
                                 }
-                                // Hide HUD once the network request comes back (must be done on main UI thread)
-                                MBProgressHUD.hide(for: self.view, animated: true)
             })
         task.resume()
     }

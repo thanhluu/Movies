@@ -31,6 +31,7 @@ The following **additional** features are implemented:
 - [X] Customize detail view
 - [X] Add release & vote average information into detail view
 - [X] Add popular & upcoming tabs
+- [X] Add infinite scroll to load more movies
 
 ## Video Walkthrough
 
