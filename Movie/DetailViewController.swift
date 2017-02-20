@@ -103,6 +103,10 @@ class DetailViewController: UIViewController {
         
         self.present(posterVC, animated: true, completion: nil)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        tabBarController?.tabBar.isHidden = true
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
