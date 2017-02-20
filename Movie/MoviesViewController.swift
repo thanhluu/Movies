@@ -312,11 +312,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             
             let detailViewController = segue.destination as! DetailViewController
             
-            detailViewController.movieTitle = movie["title"] as? String
-            detailViewController.overview = movie["overview"] as? String
+            detailViewController.movieId = movie["id"] as? Int
+//            detailViewController.movieTitle = movie["title"] as? String
+//            detailViewController.overview = movie["overview"] as? String
             detailViewController.poster = movie["poster_path"] as? String
-            detailViewController.voteText = movie["vote_average"] as? Double
-            detailViewController.releaseDateText = movie["release_date"] as? String
+//            detailViewController.voteText = movie["vote_average"] as? Double
+//            detailViewController.releaseDateText = movie["release_date"] as? String
 
             tableView.deselectRow(at: indexPath!, animated: true)
         } else {
@@ -327,11 +328,12 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
             
             let detailViewController = segue.destination as! DetailViewController
             
-            detailViewController.movieTitle = movie["title"] as? String
-            detailViewController.overview = movie["overview"] as? String
+            detailViewController.movieId = movie["id"] as? Int
+//            detailViewController.movieTitle = movie["title"] as? String
+//            detailViewController.overview = movie["overview"] as? String
             detailViewController.poster = movie["poster_path"] as? String
-            detailViewController.voteText = movie["vote_average"] as? Double
-            detailViewController.releaseDateText = movie["release_date"] as? String
+//            detailViewController.voteText = movie["vote_average"] as? Double
+//            detailViewController.releaseDateText = movie["release_date"] as? String
             
         }
         

@@ -8,6 +8,7 @@
 
 import UIKit
 import AFNetworking
+import MBProgressHUD
 
 class DetailViewController: UIViewController {
 
@@ -19,29 +20,39 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var releaseDate: UILabel!
     @IBOutlet weak var voteAverage: UILabel!
     
-    var overview: String!
-    var movieTitle: String!
+    var movieId: Int!
+    var movieInfo = NSDictionary()
     var poster: String!
-    var releaseDateText: String!
-    var voteText: Double!
+
+//    var overview: String!
+//    var movieTitle: String!
+
+//    var releaseDateText: String!
+//    var voteText: Double!
+    
+    override func viewWillAppear(_ animated: Bool) {
+        tabBarController?.tabBar.isHidden = true
+        loadMovieInfo(movieId)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
 
         // Do any additional setup after loading the view.
-        titleLabel.text = movieTitle
-        titleLabel.sizeToFit()
-        overviewLabel.text = overview
-        overviewLabel.sizeToFit()
-        infoView.frame.size.height = overviewLabel.frame.size.height + overviewLabel.frame.origin.y + 10
-        scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: 60 + infoView.frame.origin.y + infoView.frame.size.height)
-
-        releaseDate.text = releaseDateText
-        voteAverage.text = String(voteText)
-        
+//        titleLabel.text = movieTitle
+//        titleLabel.sizeToFit()
+//        overviewLabel.text = overview
+//        overviewLabel.sizeToFit()
+//        infoView.frame.size.height = overviewLabel.frame.size.height + overviewLabel.frame.origin.y + 10
+//        scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: 60 + infoView.frame.origin.y + infoView.frame.size.height)
+//
+//        releaseDate.text = releaseDateText
+//        voteAverage.text = String(voteText)
+//        
         if let posterPath = poster {
-            //let posterBaseUrl = "http://image.tmdb.org/t/p/w500"
-            //posterView.setImageWith(URL(string: posterBaseUrl + posterPath)!)
             
             let smallImageUrl = "http://image.tmdb.org/t/p/w92" + posterPath
             let largeImageUrl = "http://image.tmdb.org/t/p/w1000" + posterPath
@@ -93,6 +104,52 @@ class DetailViewController: UIViewController {
         }
     }
     
+    func loadMovieInfo(_ movieId: Int = 1) {
+        let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
+        let url = URL(string: "https://api.themoviedb.org/3/movie/\(movieId)?api_key=\(apiKey)")
+        //print(url!)
+        let request = URLRequest(
+            url: url!,
+            cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData,
+            timeoutInterval: 10)
+        let session = URLSession(
+            configuration: URLSessionConfiguration.default,
+            delegate: nil,
+            delegateQueue: OperationQueue.main
+        )
+
+        // Display HUD right before the request is made
+        MBProgressHUD.showAdded(to: self.view, animated: true)
+        
+        let task: URLSessionDataTask =
+            session.dataTask(with: request,
+                             completionHandler: { (dataOrNil, response, error) in
+                                if (error != nil) {
+                                    print("error \(error)")
+                                    MBProgressHUD.hide(for: self.view, animated: true)
+                                }
+                                
+                                if let data = dataOrNil {
+                                    if let responseDictionary = try! JSONSerialization.jsonObject(
+                                        with: data, options:[]) as? NSDictionary {
+                                        self.titleLabel.text = responseDictionary.value(forKey: "title") as! String?
+                                        self.titleLabel.sizeToFit()
+                                        self.overviewLabel.text = responseDictionary.value(forKey: "overview") as! String?
+                                        self.overviewLabel.sizeToFit()
+                                        self.infoView.frame.size.height = self.overviewLabel.frame.size.height + self.overviewLabel.frame.origin.y + 10
+                                        self.scrollView.contentSize = CGSize(width: self.scrollView.frame.size.width, height: 60 + self.infoView.frame.origin.y + self.infoView.frame.size.height)
+                                        
+                                        self.releaseDate.text = responseDictionary.value(forKey: "release_date") as! String?
+                                        //self.voteAverage.text = String(responseDictionary.value(forKey: "vote_average") as! String?
+                                    }
+                                    
+                                }
+            })
+        // Hide HUD once the network request comes back (must be done on main UI thread)
+        MBProgressHUD.hide(for: self.view, animated: true)
+        task.resume()
+    }
+    
     @IBAction func unwindToDetailViewController(segue: UIStoryboardSegue) {}
     
     @IBAction func onPresentModal(_ sender: Any) {
@@ -102,10 +159,6 @@ class DetailViewController: UIViewController {
         let posterVC = mainStoryboard.instantiateViewController(withIdentifier: "posterVC") as! PosterViewController
         
         self.present(posterVC, animated: true, completion: nil)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        tabBarController?.tabBar.isHidden = true
     }
 
     override func didReceiveMemoryWarning() {
