@@ -33,6 +33,7 @@ The following **additional** features are implemented:
 - [X] Add popular & upcoming tabs
 - [X] Add infinite scroll to load more movies
 - [X] Zoomable poster view
+- [X] Hide tab bar when view movie details
 
 ## Video Walkthrough
 

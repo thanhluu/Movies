@@ -35,7 +35,7 @@ class DetailViewController: UIViewController {
         overviewLabel.sizeToFit()
         infoView.frame.size.height = overviewLabel.frame.size.height + overviewLabel.frame.origin.y + 10
         scrollView.contentSize = CGSize(width: scrollView.frame.size.width, height: 60 + infoView.frame.origin.y + infoView.frame.size.height)
-  
+
         releaseDate.text = releaseDateText
         voteAverage.text = String(voteText)
         
